@@ -1,5 +1,1 @@
-#Hola
-
-
-
-No se usar git
+Aca es donde van todas las instrucciones de como compilar y todo eso
