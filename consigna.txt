@@ -1,0 +1,38 @@
+|---------------------------------------------|
+|											  |
+|				 TP PI Censos				  |
+| 											  |
+|---------------------------------------------|
+
+
+#Pais.csv - Una sola linea
+	*Cantidad de personas en el pais
+	*Indice de desempleo del pais
+
+#Provincia.csv - 1 linea por provincia
+	*Nombre de la provincia
+	*Cantidad de habitantes
+	*Indice de desempleo 
+
+#Departamento.csv - 1 linea por dpto, ordenado alfabeticamente, Prioridad provincias.
+	*Nombre de la provincia
+	*Nombre del dpto
+	*cantidad de habitantes
+	*Indice de desempleo
+
+
+Condicion de actividad del habitante:
+	0 - Sin datos
+	1 - Ocupada
+	2 - Desocupada
+	3 - Economicamente Inactiva
+
+
+
+Id unico del hogar (no lo usamos nosotros) unsigned long
+Nombre del departamento string (menos de 128 caracteres)
+Nombre de la provincia string (menos de 128 caracteres)
+
+
+Ej de linea
+3,6546085,Cruz del Eje, Cordoba
