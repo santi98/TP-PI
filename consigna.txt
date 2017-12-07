@@ -33,3 +33,6 @@ Nombre de la provincia string (menos de 128 caracteres)
 
 Ej de linea
 3,6546085,Cruz del Eje, Cordoba
+
+
+Indice de desempleo = Total Desocupados/(total ocupados + total desocupados)
