@@ -3,7 +3,7 @@
 
 typedef struct censusCDT * censusADT;
 
-censusADT newCensus(int totalProv, char ** provList);
+censusADT newCensus(void);
 
 void freeCensus(censusADT c);
 

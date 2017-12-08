@@ -47,7 +47,7 @@ static void freeDeptRec(struct deptCDT * d);
 static void freeProvRec(struct provCDT * p);
 
 //Creates a new census.
-censusADT newCensus(int totalProv, char ** provList){
+censusADT newCensus(void){
 
 	censusADT c = malloc(sizeof(censusADT));
 
@@ -189,30 +189,4 @@ static void freeDeptRec(struct deptCDT * d){
 	free(d->title);
 	free(d);
 	return;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-int main(void){
-	return 0;
 }
