@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
-#include <stdlib.h>
 #include "censusADT.h"
 
 #define MAX_LINE 80
