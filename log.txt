@@ -1,0 +1,30 @@
+E:3.L:13032 - Invalid character in department name...Ignoring line 13032
+E:3.L:13732 - Invalid character in department name...Ignoring line 13732
+E:3.L:14003 - Invalid character in department name...Ignoring line 14003
+E:3.L:15013 - Invalid character in department name...Ignoring line 15013
+E:3.L:17329 - Invalid character in department name...Ignoring line 17329
+E:3.L:24109 - Invalid character in department name...Ignoring line 24109
+E:3.L:25225 - Invalid character in department name...Ignoring line 25225
+E:3.L:26600 - Invalid character in department name...Ignoring line 26600
+E:3.L:30589 - Invalid character in department name...Ignoring line 30589
+E:3.L:31935 - Invalid character in department name...Ignoring line 31935
+E:3.L:35898 - Invalid character in department name...Ignoring line 35898
+E:3.L:36846 - Invalid character in department name...Ignoring line 36846
+E:3.L:40574 - Invalid character in department name...Ignoring line 40574
+E:3.L:41709 - Invalid character in department name...Ignoring line 41709
+E:3.L:44018 - Invalid character in department name...Ignoring line 44018
+E:3.L:46375 - Invalid character in department name...Ignoring line 46375
+E:3.L:61729 - Invalid character in department name...Ignoring line 61729
+E:3.L:65450 - Invalid character in department name...Ignoring line 65450
+E:3.L:65557 - Invalid character in department name...Ignoring line 65557
+E:3.L:73021 - Invalid character in department name...Ignoring line 73021
+E:3.L:74424 - Invalid character in department name...Ignoring line 74424
+E:3.L:78094 - Invalid character in department name...Ignoring line 78094
+E:3.L:79134 - Invalid character in department name...Ignoring line 79134
+E:3.L:83320 - Invalid character in department name...Ignoring line 83320
+E:3.L:83919 - Invalid character in department name...Ignoring line 83919
+E:3.L:88626 - Invalid character in department name...Ignoring line 88626
+E:3.L:94794 - Invalid character in department name...Ignoring line 94794
+
+
+Total Ignored lines: 27
