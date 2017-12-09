@@ -9,8 +9,10 @@
 #define OCCUPIED_VALUE 1
 #define UNOCCUPIED_VALUE 2
 
+//Erases line from buffer.
 #define ERASE_LINE(c) while(((c)=getchar())!='\n' && (c)!=EOF)
-#define IS_VALID_STATUS(c) (isdigit(c) && (c)>='0' && (c)<='3' && size==0)
+//Validates that the economic status identif
+#define STATUS_MAX_VALUE 3
 #define ABS(c) ((c)>0?(c):(-(c))) 
 
 #define ECONOMIC_STATUS 0
@@ -43,7 +45,14 @@ int errorLineHandler(FILE * logFile, int errorType, unsigned long line);
 
 int main(void){
 	censusADT c = newCensus(OCCUPIED_VALUE, UNOCCUPIED_VALUE);
-	int status, errorStatus=0, k, totalErrors=0;
+	if(c==NULL){
+		fprintf(stderr, "Census could not be created. Not enough memory...Terminating program\n");
+		
+		return 1;
+	}
+
+	int status, errorStatus, k, memError=1;
+	long totalLineErrors=0, totalMemErrors = 0;
 	unsigned long line = 0;
 	char * dept, * prov;
 	//4 is the minimum space used by the status, home id and commas.
@@ -52,6 +61,8 @@ int main(void){
 	FILE * log;
 	log = fopen("./log.txt", "w");
 
+
+
 	while((k=getchar())!=EOF){
 		line++;
 		ungetc(k, stdin);
@@ -59,20 +70,27 @@ int main(void){
 		errorStatus=0;
 		errorStatus = readLine(&status, s, &dept, &prov);
 		if (errorStatus!=1){
-			totalErrors += errorLineHandler(log, errorStatus, line);
+			totalLineErrors += errorLineHandler(log, errorStatus, line);
 		}
-		else
-			addElem(c, status, dept, prov);
+		else{
+			memError = addElem(c, status, dept, prov);
+			if (memError==0){
+				fprintf(log, "E:M.L:%ld - UNAVAILABLE MEMORY...LINE WAS IGNORED\n", line);
+				totalMemErrors++;
+			}
+		}
 		
 	}
-
-	fprintf(log, "\n\nTotal Ignored lines: %d\n", totalErrors);
+	if(totalLineErrors>0 || totalMemErrors>0){
+		fprintf(stderr, "%ld lines were ignored, check log.txt\n", totalLineErrors + totalMemErrors);
+		fprintf(log, "\n\nTotal Ignored lines: %ld\n", totalLineErrors);
+	}
 	fclose(log);
 	
 	storeToFiles(c, PATH_COUNTRY, PATH_PROVINCE, PATH_DEPARTMENT);
 	freeCensus(c);
 	
-	return 1;
+	return 0;
 }
 int errorLineHandler(FILE * logFile, int errorType, unsigned long line){
 
@@ -110,6 +128,10 @@ int readLine(int * status, char * s,char ** dept, char ** prov){
 			case ECONOMIC_STATUS:
 				if (isdigit(c)){
 					*status = (*status)*10 + c - '0';
+					if (*status > STATUS_MAX_VALUE){
+						option = ERROR;
+						errorStatus = -1;
+					}
 				}
 				else if(c==','&& size>0){
 					option=HOME_ID;

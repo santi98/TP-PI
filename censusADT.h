@@ -3,6 +3,7 @@
 
 typedef struct censusCDT * censusADT;
 
+//Returns NULL if the new census could not be created due to unavailable memory.
 censusADT newCensus(int occupied, int unocuppied);
 
 void freeCensus(censusADT c);
@@ -28,7 +29,6 @@ int addElem(censusADT c, int status, char *dept, char *prov);
 	Returns 0 in case of error and 1 if it excecuted correctly.
 
 */
-
 int storeToFiles(censusADT c, char *pathCountry, char * pathProvince, char * pathDepartment);
 
 #endif
