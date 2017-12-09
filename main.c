@@ -65,10 +65,11 @@ int main(void){
 	}
 
 	fprintf(log, "\n\nTotal Ignored lines: %d\n", totalErrors);
-	//TODO
-	//storeToFiles(c, PATH_COUNTRY, PATH_PROVINCE, PATH_DEPARTMENT);
 	fclose(log);
+	
+	storeToFiles(c, PATH_COUNTRY, PATH_PROVINCE, PATH_DEPARTMENT);
 	freeCensus(c);
+	
 	return 1;
 }
 int errorLineHandler(FILE * logFile, int errorType, unsigned long line){
@@ -106,7 +107,7 @@ int readLine(int * status, char * s,char ** dept, char ** prov){
 
 			case ECONOMIC_STATUS:
 				if(IS_VALID_STATUS(c))
-					*status=c;
+					*status=c -'0';
 				else if(c==','&& size==1){
 					option=HOME_ID;
 				}
@@ -163,8 +164,12 @@ int readLine(int * status, char * s,char ** dept, char ** prov){
 		size++;
 	}
 
-	if (option==PROV)
-		*s=0;
+	if (option==DEPT)
+		errorStatus = -3;
+
+	else if (option==PROV)
+			*s=0;
+
 	//If the line reading was terminated because it was too long it is then erased.
 	if(c!='\n' && c!=EOF){
 

@@ -8,7 +8,10 @@
 #define FALSE 0
 
 //If there are no occupied or deoccupied citizens, the unemployment index will be 0.
-#define UNEMP_INDX(o,dc) ( (dc)>0? ( ((double)(o))/((o)+(dc)) : (dc) ) )
+
+//#define UNEMP_INDX(o,dc) (dc)>0?(((double)(dc))/((o)+(dc))):(dc)
+
+#define UNEMP_INDX(a, b) ((b)>0?(double)(b)/((a)+(b)):(b))
 
 struct deptCDT{
 	char * title;
@@ -47,6 +50,12 @@ static struct provCDT * addProvRec(struct provCDT * p, int status, char* prov, c
 static void freeDeptRec(struct deptCDT * d);
 
 static void freeProvRec(struct provCDT * p);
+
+static int storeDepartments(struct provCDT * p, FILE * fileDepartment);
+
+static int storeProvincesAndDeptartment(struct provCDT * p, FILE * fileProvince, FILE * fileDepartment);
+
+static int storeCountry(censusADT c, FILE * fileCountry);
 
 //Creates a new census.
 censusADT newCensus(void){
@@ -106,10 +115,16 @@ static struct deptCDT * addDeptRec(struct deptCDT * d, int status, char* dept, c
 			free(aux);
 			return d;
 		}
+
+		aux->total=0;
+		aux->totalOc=0;
+		aux->totalDc=0;
+		aux->next = d;
+
 		c->iterP->iterD = aux;
 		strcpy(c->iterP->iterD->title, dept);
 		addTotals(c, status);
-		aux->next = d;
+		
 		return aux;
 	}
 	if(f == 0){
@@ -138,11 +153,16 @@ static struct provCDT * addProvRec(struct provCDT * p, int status, char* prov, c
 			free(aux);
 			return p;
 		}
+
+		aux->total=0;
+		aux->totalOc=0;
+		aux->totalDc=0;
+		aux->next = p;
 		c->iterP = aux;
+
 		strcpy(c->iterP->title, prov);//c->iterP->title a aux
 		aux->firstD = NULL;
 		aux->iterD = NULL;
-		aux->next = p;
 		return aux;
 	}
 	if(f==0){
@@ -157,14 +177,14 @@ static void addTotals(censusADT c, int status){
 	if(status == 1){
 			c->totalOc++;
 			c->iterP->totalOc++;
-			c->iterP->iterD->totalOc++;
+			c->iterP->iterD->totalOc++;	
 		}
 	else if(status == 2){
-		c->totalDc++;
-		c->iterP->totalDc++;
-		c->iterP->iterD->totalDc++;
+		c->totalDc++;	
+		c->iterP->totalDc++;	
+		c->iterP->iterD->totalDc++;	
 	}
-	c->total++;
+	c->total++; 
 	c->iterP->total++;
 	c->iterP->iterD->total++;
 }
@@ -194,7 +214,7 @@ static void freeDeptRec(struct deptCDT * d){
 	free(d);
 	return;
 }
-/*
+
 int storeToFiles(censusADT c, char *pathCountry, char * pathProvince, char * pathDepartment){
 	FILE * fileCountry = fopen(pathCountry, "w");
 	FILE * fileProvince = fopen(pathProvince, "w");
@@ -213,26 +233,39 @@ int storeToFiles(censusADT c, char *pathCountry, char * pathProvince, char * pat
 	}
 
 	flag = storeCountry(c, fileCountry);
-	flag = storeProvinces(c, fileProvince);
+	flag = storeProvincesAndDeptartment(c->firstP, fileProvince, fileDepartment);
 
+	fclose(fileCountry);
+	fclose(fileProvince);
+	fclose(fileDepartment);
+
+	return flag;
 }
 
-int storeCountry(censusADT c, FILE * fileCountry){
+static int storeCountry(censusADT c, FILE * fileCountry){
 	int errorStatus;
-	errorStatus = fprintf(fileCountry, "%d,%.2g\n", c->total, UNEMP_INDX(c->totalOc, c->totalDc));
+	errorStatus = fprintf(fileCountry, "%ld,%.2f\n", c->total, UNEMP_INDX(c->totalOc, c->totalDc));
 
 	return errorStatus>0;
 }
 
-int storeProvinces(censusADT c, FILE * fileProvince){
+static int storeProvincesAndDeptartment(struct provCDT * p, FILE * fileProvince, FILE * fileDepartment){
 	int errorStatus;
-	storeProvincesRec(c->firstP, FILE * fileProvince, c);
+	struct provCDT * aux = p;
+	while (aux!=NULL){
+		errorStatus=fprintf(fileProvince, "%s,%ld,%.2f\n",aux->title, aux->total, UNEMP_INDX(aux->totalOc, aux->totalDc));
+		storeDepartments(aux, fileDepartment);
+		aux = aux->next;
+	}
 	return errorStatus>0;
 }
 
-int storeDepartments(censusADT c, FILE * fileDepartment){
+static int storeDepartments(struct provCDT * p, FILE * fileDepartment){
 	int errorStatus;
-	storeDepartmentsRec(c->firstP , FILE * fileDepartment, c);
+	struct deptCDT * aux = p->firstD;
+	while (aux!=NULL){
+		errorStatus = fprintf(fileDepartment, "%s,%s,%ld,%.2f\n", p->title, aux->title, aux->total, UNEMP_INDX(aux->totalOc, aux->totalDc));
+		aux = aux->next;
+	}
 	return errorStatus>0;
 }
-*/
