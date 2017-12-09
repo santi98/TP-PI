@@ -118,13 +118,17 @@ int errorLineHandler(FILE * logFile, int errorType, unsigned long line){
 }
 
 int readLine(int * status, char * s,char ** dept, char ** prov){
-	int size=0,option=0, errorStatus=1, c;
-	//sets department string at the beginning of the string.
-	*dept = s;
+	int size=0,option=0, errorStatus=1, readHomeID=0, c;
 	*status = 0;
+	//Sets department string pointer at the beginning of the s string.
+	*dept = s;
+
 	while(size<MAX_LINE && (c=getchar())!='\n' && c!=EOF){
 		switch(option){
 
+			//Builds status number until it reads a comma, then switches to case HOME_ID.
+			//If the first character read is a comma, status number exceeds its maximun value,
+			//or any character is invalid, it switches to ERROR instead.
 			case ECONOMIC_STATUS:
 				if (isdigit(c)){
 					*status = (*status)*10 + c - '0';
@@ -133,7 +137,7 @@ int readLine(int * status, char * s,char ** dept, char ** prov){
 						errorStatus = -1;
 					}
 				}
-				else if(c==','&& size>0){
+				else if (c==','&& size>0){
 					option=HOME_ID;
 				}
 				else{
@@ -142,18 +146,24 @@ int readLine(int * status, char * s,char ** dept, char ** prov){
 				}
 				break;
 
-
+			//Validates that HOME ID is composed of digits, otherwise switches to case ERROR.
+			//If it reads a comma before any digit, also switches to case ERROR. 
+			//Switches to case DEPT if it reads a comma after digits.
 			case HOME_ID:
-				if(c==',' && size>2){
+				if (isdigit(c))
+					readHomeID=1;
+				else if (c==',' && readHomeID)
 					option=DEPT;
-				}
-				else if (!isdigit(c)){
+				else {
 					errorStatus=-2;
 					option=ERROR;
 				}
 				break;						
 			
-
+			//Copies to string s valid characters until it reads a comma, then finishes *dept
+			//string, sets *prov string in the following position and switches to case PROV.
+			//If *dept string and s string are equal, nothing was copied yet. If it reads 
+			//a comma before copying anything, or character is not valid, switches to case ERROR.
 			case DEPT:
 				if(c!=',' && c<=MAX_ASCII){
 					*s = c;
@@ -171,7 +181,8 @@ int readLine(int * status, char * s,char ** dept, char ** prov){
 				}
 				break;
 
-
+			//Copies to string s valid characters until end of line. 
+			//If any character is invalid it switches to case ERROR.
 			case PROV:
 				if(c!=',' && c<MAX_ASCII){
 					*s = c;
