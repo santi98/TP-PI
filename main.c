@@ -64,7 +64,7 @@ int main(void){
 		
 	}
 
-	fprintf(log, "\n\nTotal Ignored lines: %d", totalErrors);
+	fprintf(log, "\n\nTotal Ignored lines: %d\n", totalErrors);
 	//TODO
 	//storeToFiles(c, PATH_COUNTRY, PATH_PROVINCE, PATH_DEPARTMENT);
 	fclose(log);
