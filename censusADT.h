@@ -3,7 +3,7 @@
 
 typedef struct censusCDT * censusADT;
 
-censusADT newCensus(void);
+censusADT newCensus(int occupied, int unocuppied);
 
 void freeCensus(censusADT c);
 

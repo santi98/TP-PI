@@ -6,6 +6,8 @@
 
 #define MAX_LINE 80
 #define MAX_ASCII 128
+#define OCCUPIED_VALUE 1
+#define UNOCCUPIED_VALUE 2
 
 #define ERASE_LINE(c) while(((c)=getchar())!='\n' && (c)!=EOF)
 #define IS_VALID_STATUS(c) (isdigit(c) && (c)>='0' && (c)<='3' && size==0)
@@ -40,7 +42,7 @@ int readLine(int * status, char * s,char ** dept, char ** prov);
 int errorLineHandler(FILE * logFile, int errorType, unsigned long line);
 
 int main(void){
-	censusADT c = newCensus();
+	censusADT c = newCensus(OCCUPIED_VALUE, UNOCCUPIED_VALUE);
 	int status, errorStatus=0, k, totalErrors=0;
 	unsigned long line = 0;
 	char * dept, * prov;
@@ -99,16 +101,17 @@ int errorLineHandler(FILE * logFile, int errorType, unsigned long line){
 
 int readLine(int * status, char * s,char ** dept, char ** prov){
 	int size=0,option=0, errorStatus=1, c;
-	//sets the at the beginning of the return string.
+	//sets department string at the beginning of the string.
 	*dept = s;
-
+	*status = 0;
 	while(size<MAX_LINE && (c=getchar())!='\n' && c!=EOF){
 		switch(option){
 
 			case ECONOMIC_STATUS:
-				if(IS_VALID_STATUS(c))
-					*status=c -'0';
-				else if(c==','&& size==1){
+				if (isdigit(c)){
+					*status = (*status)*10 + c - '0';
+				}
+				else if(c==','&& size>0){
 					option=HOME_ID;
 				}
 				else{

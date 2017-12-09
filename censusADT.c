@@ -15,14 +15,14 @@
 
 struct deptCDT{
 	char * title;
-	long totalOc, totalDc, total;
+	long totalOc, totalUo, total;
 	struct deptCDT * next;
 
 };
 
 struct provCDT{
 	char * title;
-	long totalOc, totalDc, total;
+	long totalOc, totalUo, total;
 	struct deptCDT * firstD;
 	struct deptCDT *iterD;
 
@@ -31,8 +31,8 @@ struct provCDT{
 };
 
 struct censusCDT{
-	long totalOc, totalDc, total;
-	int totalProv;
+	long totalOc, totalUo, total;
+	int occupied, unoccupied;
 	struct provCDT * firstP;
 	struct provCDT * iterP;
 };
@@ -58,7 +58,7 @@ static int storeProvincesAndDeptartment(struct provCDT * p, FILE * fileProvince,
 static int storeCountry(censusADT c, FILE * fileCountry);
 
 //Creates a new census.
-censusADT newCensus(void){
+censusADT newCensus(int occupied, int unoccupied){
 
 	censusADT c = malloc(sizeof(*c));
 
@@ -66,9 +66,11 @@ censusADT newCensus(void){
 
 		c->total = 0;
 		c->totalOc = 0;
-		c->totalDc = 0;	
+		c->totalUo = 0;	
 		c->firstP = NULL;
-		c->iterP = NULL;		
+		c->iterP = NULL;
+		c->occupied = occupied;
+		c->unoccupied = unoccupied;		
 	}
 
 	return c;
@@ -118,7 +120,7 @@ static struct deptCDT * addDeptRec(struct deptCDT * d, int status, char* dept, c
 
 		aux->total=0;
 		aux->totalOc=0;
-		aux->totalDc=0;
+		aux->totalUo=0;
 		aux->next = d;
 
 		c->iterP->iterD = aux;
@@ -156,11 +158,11 @@ static struct provCDT * addProvRec(struct provCDT * p, int status, char* prov, c
 
 		aux->total=0;
 		aux->totalOc=0;
-		aux->totalDc=0;
+		aux->totalUo=0;
 		aux->next = p;
 		c->iterP = aux;
 
-		strcpy(c->iterP->title, prov);//c->iterP->title a aux
+		strcpy(c->iterP->title, prov);
 		aux->firstD = NULL;
 		aux->iterD = NULL;
 		return aux;
@@ -174,15 +176,15 @@ static struct provCDT * addProvRec(struct provCDT * p, int status, char* prov, c
 }
 
 static void addTotals(censusADT c, int status){
-	if(status == 1){
+	if(status == c->occupied){
 			c->totalOc++;
 			c->iterP->totalOc++;
 			c->iterP->iterD->totalOc++;	
 		}
-	else if(status == 2){
-		c->totalDc++;	
-		c->iterP->totalDc++;	
-		c->iterP->iterD->totalDc++;	
+	else if(status == c->unoccupied){
+		c->totalUo++;	
+		c->iterP->totalUo++;	
+		c->iterP->iterD->totalUo++;	
 	}
 	c->total++; 
 	c->iterP->total++;
@@ -244,7 +246,7 @@ int storeToFiles(censusADT c, char *pathCountry, char * pathProvince, char * pat
 
 static int storeCountry(censusADT c, FILE * fileCountry){
 	int errorStatus;
-	errorStatus = fprintf(fileCountry, "%ld,%.2f\n", c->total, UNEMP_INDX(c->totalOc, c->totalDc));
+	errorStatus = fprintf(fileCountry, "%ld,%.2f\n", c->total, UNEMP_INDX(c->totalOc, c->totalUo));
 
 	return errorStatus>0;
 }
@@ -253,7 +255,7 @@ static int storeProvincesAndDeptartment(struct provCDT * p, FILE * fileProvince,
 	int errorStatus;
 	struct provCDT * aux = p;
 	while (aux!=NULL){
-		errorStatus=fprintf(fileProvince, "%s,%ld,%.2f\n",aux->title, aux->total, UNEMP_INDX(aux->totalOc, aux->totalDc));
+		errorStatus=fprintf(fileProvince, "%s,%ld,%.2f\n",aux->title, aux->total, UNEMP_INDX(aux->totalOc, aux->totalUo));
 		storeDepartments(aux, fileDepartment);
 		aux = aux->next;
 	}
@@ -264,7 +266,7 @@ static int storeDepartments(struct provCDT * p, FILE * fileDepartment){
 	int errorStatus;
 	struct deptCDT * aux = p->firstD;
 	while (aux!=NULL){
-		errorStatus = fprintf(fileDepartment, "%s,%s,%ld,%.2f\n", p->title, aux->title, aux->total, UNEMP_INDX(aux->totalOc, aux->totalDc));
+		errorStatus = fprintf(fileDepartment, "%s,%s,%ld,%.2f\n", p->title, aux->title, aux->total, UNEMP_INDX(aux->totalOc, aux->totalUo));
 		aux = aux->next;
 	}
 	return errorStatus>0;
