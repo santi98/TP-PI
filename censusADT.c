@@ -13,6 +13,11 @@
 
 #define UNEMP_INDX(a, b) ((b)>0?(double)(b)/((a)+(b)):(b))
 
+/*
+	deptCDT is the structure corresponding to departments, it holds the department name,
+	data regarding the amount of citizens according to economic status and a pointer
+	to the next deptCDT, making a NULL terminated and alfabeticallly ordered list.
+*/
 struct deptCDT{
 	char * title;
 	long totalOc, totalUo, total;
@@ -20,6 +25,13 @@ struct deptCDT{
 
 };
 
+/*
+	Similar to deptCDT, provCDT corresponds to provinces and holds the province
+	name and the data regarding citizens and their status.
+	It also holds a pointer to the first element of a list of the departments in that province,
+	as well as an iterative pointer to that list which makes going over it faster.
+	It also holdsa pointer tothe next provCDT, making a NULL terminated and alfabeticallly ordered list.
+*/
 struct provCDT{
 	char * title;
 	long totalOc, totalUo, total;
@@ -30,6 +42,15 @@ struct provCDT{
 
 };
 
+/*
+	Similar to deptCDT and provCDT, censusCDT corresponds to the country and holds data regarding citizens
+	and their status.
+	The variables occupied and unoccupied hold the values corresponding to the economic status indicators
+	for occupied and unoccupied citizens.
+	It also holds a pointer to the first element of a list of the provinces in that country,
+	as well as an iterative pointer to that list which makes going over it faster.
+	
+*/
 struct censusCDT{
 	long totalOc, totalUo, total;
 	int occupied, unoccupied;
@@ -41,20 +62,25 @@ struct censusCDT{
 //Adds to the census, province and dept counters according to economic status.
 static void addTotals(censusADT c, int status);
 
-//Adds a department to the list of departments in a province.
+//Adds a department to the list of departments in a province recursively.
 static struct deptCDT * addDeptRec(struct deptCDT * d, int status, char* dept, censusADT c, int * flag);
 
-//Adds a province to the list of provinces in the census.
+//Adds a province to the list of provinces in the census recursively.
 static struct provCDT * addProvRec(struct provCDT * p, int status, char* prov, censusADT c, int * flag);
 
+//Frees memory used by departments recursively.
 static void freeDeptRec(struct deptCDT * d);
 
+//Frees memory used by provinces recursively.
 static void freeProvRec(struct provCDT * p);
 
+//Auxiliary function used in storeProvincesAndDepartments.
 static int storeDepartments(struct provCDT * p, FILE * fileDepartment);
 
+//Auxiliary function used in storeToFile.
 static int storeProvincesAndDeptartment(struct provCDT * p, FILE * fileProvince, FILE * fileDepartment);
 
+//Auxiliary function used in storeToFile.
 static int storeCountry(censusADT c, FILE * fileCountry);
 
 //Creates a new census.
@@ -191,7 +217,7 @@ static void addTotals(censusADT c, int status){
 	c->iterP->iterD->total++;
 }
 
-
+//Frees memory used by the census.
 void freeCensus(censusADT c){
 	freeProvRec(c->firstP);
 	free(c);
@@ -216,6 +242,29 @@ static void freeDeptRec(struct deptCDT * d){
 	free(d);
 	return;
 }
+
+/*
+	Stores values from the census into 3 files.
+	#fileCountry
+		Holds the total population of the country as well as the unemployment
+		index as comma separated values.
+	#fileProvince
+		Ordered alfabetically.
+		Each line corresponds to a province and hold the province name,
+		the total population of the province and the unemployment index
+		of the province as comma separated values.
+	#fileDepartment
+		Ordered alfabetically first by province name, then by department name.
+		Each line corresponds to a department and holds the province name the 
+		department is included in, the department name, the total population of the 
+		department and the unemployment index of the department as comma separated
+		values.
+		
+	Returns 0 if the files could not be created or if there was a problem while adding
+	a line.
+	Returns 1 if the files were created and the data stored properly.
+	
+*/
 
 int storeToFiles(censusADT c, char *pathCountry, char * pathProvince, char * pathDepartment){
 	FILE * fileCountry = fopen(pathCountry, "w");
