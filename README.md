@@ -23,11 +23,11 @@ Unique HOME ID
 
 Department name
 
-     A string formed y standard ASCII characters.
+     A string formed by standard ASCII characters.
   
 Province name
 
-     A string formed y standard ASCII characters.
+     A string formed by standard ASCII characters.
   
   
 Example line:
