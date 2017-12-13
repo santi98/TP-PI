@@ -34,3 +34,10 @@ Cosas que hicimos bien que todos hicieron mal
     y habria que cambiar el TAD si Ocupado pasa a ser algo diferente a 1.
     Nuestro uso de los iters fue "creativo", hacia que el programa se un poco mas eficiente PERO fue dificil de entender,
     tendria que estar mas claro el codigo.
+
+
+Cuando piden "Archivos de prueba" se refieren a archivos hechos por nostros, serian otros csv parecidos al censo10000 que 
+paso la catedra. Nosotros hicimos las pruebas corriendo el programa sin pasarle el archivo y probamos linea por linea cosas 
+diferentes para ver que la maquina de estado ande bien, esto tendria que haber estado en un archivo y lo tendriamos que haber
+entregado.
+Hay que probar tambien el caso que te pasan un archivo vacio.
