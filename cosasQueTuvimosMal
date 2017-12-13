@@ -1,0 +1,36 @@
+Errores de estilo:
+    
+    En el ErrorLineHandler en vez de poner los casos como 1,2,3,4,5 tendriamos que haber hecho un enum
+    y ponerles nombres descriptivos.
+    
+    En el TAD
+        A lo que nosotros llamamos iters, no deberian haberse llamado iters. Los iters son otra cosa, estos
+        deberian haberse llamado lastAdded o algo parecido.
+        
+        En las diferentes funciones recursivas para agregar elementos y en addTotals hicimos cambios directo\
+        a la estructura. Esto esta mal visto por es como usar variables globales. Cada vez que cambias una funcion 
+        tenes que cambiar las demas y no esta bueno para el pobre infeliz que tenga que mantener ese codigo.
+        Tendriamos que haber devuelto por argumento algo (un flag quizas?) y que otra funcion utilize ese algo para
+        cambiar la estructura.
+
+
+
+
+Separacion del frontEnd/BackEnd
+ 
+     En el TAD NO se tendria que usar fprintf de ninguna manera. Lo que hicimos de storeToFiles esta mal y tendria que
+     haberse hecho en el frontEnd. Lo hicimos asi porque no sabiamos como recorrer la estructura fuera del TAD y pasar
+     cada elemento con un get hubiera sido un desastre de eficiencia. La manera correcta hacer store to files seria
+     usando iters (los iters de verdad, no la mentira que hicimos nosotros). El iter se usa para recorrer la lista
+     fuera del TAD y se lo usa mediante las funciones toBegin y toContinue. Hay un ejemplo de iters bien usados 
+     en el drive de informatica creo que en uno de los pariciales. El de calendarioADT.
+     
+     
+Cosas que hicimos bien que todos hicieron mal
+    Hicimos un buen manejo de errores, escribiendo en un log donde estaban todos los errores de lectura y avisando si 
+    hubieron errores de memoria.
+    Hicimos bien la separacion del front y back en la funcion newCensus ya que le pasamos los valores de economic status
+    en vez de escribirlos directo al TAD. Hay que tener en cuenta que los numeros esos pueden cambiar depende del censo
+    y habria que cambiar el TAD si Ocupado pasa a ser algo diferente a 1.
+    Nuestro uso de los iters fue "creativo", hacia que el programa se un poco mas eficiente PERO fue dificil de entender,
+    tendria que estar mas claro el codigo.
